@@ -2,10 +2,12 @@ const express = require('express');
 const app = express();
 const port = 8080;
 const cors = require("cors");
+const fs = require('fs');
 
 const videos = require('./data/videos.json');
 
 app.use(cors());
+app.use(express.json());
 
 app.get("/videos", (req, res) => {
     let videoDetails = videos.map((video) => {
@@ -23,8 +25,18 @@ app.get("/videos/:id", (req, res) => {
 })
 
 app.post("/videos", (req, res) => {
-    // console.log(videos);
-    console.log(req.body);
+    
+    videos.push(req.body);
+    console.log(videos)
+
+    fs.writeFileSync('./data/videos.json', JSON.stringify(videos), (err) => {
+        if (err)
+          console.log(err);
+        else {
+          console.log("Success");
+        }
+    });
+
     res.send(videos);
 })
 
